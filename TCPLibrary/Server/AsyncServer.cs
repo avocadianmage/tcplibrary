@@ -72,9 +72,6 @@ namespace TCPLibrary.Server
 
             // Post accepts on the listening socket.
             startAccept();
-
-            // Output that the server is now running.
-            Log.WriteStartup();
         }
 
         /// <summary>
@@ -106,18 +103,11 @@ namespace TCPLibrary.Server
                     "This Recipients type is not supported.");
             }
 
-            // Send iterate through all recipients.
+            // Send a message to all designated recipients.
+            byte[] data = Global.StringToBytes(message);
             foreach (Connection recipient in recipientList)
             {
-                // Send message to recipient.
-                byte[] data = Global.StringToBytes(message);
                 recipient.Send(data);
-
-                // Output that the message was sent.
-                Log.WriteCommunication(
-                    recipient, 
-                    Global.BytesToString(data), 
-                    false);
             }
         }
 
@@ -148,13 +138,8 @@ namespace TCPLibrary.Server
         /// <param name="e"></param>
         void onClosed(object sender, EventArgs e)
         {
-            Connection connection = sender as Connection;
-
-            // Output that the client has disconnected.
-            Log.WriteConnection(connection, false);
-
             // Remove connection from list.
-            clientConnections.Remove(connection);
+            clientConnections.Remove(sender as Connection);
 
             // Increment the semaphore pool.
             maxAcceptedClients.Release();
@@ -170,9 +155,6 @@ namespace TCPLibrary.Server
         /// <param name="message"></param>
         void onMessageReceived(object sender, MessageEventArgs e)
         {
-            // Output the message that was received from the client.
-            Log.WriteCommunication(sender as Connection, e.Message, true);
-
             // Fire message-received event.
             MessageReceived.SafeInvoke(sender, e);
         }
@@ -184,11 +166,6 @@ namespace TCPLibrary.Server
         /// <param name="e"></param>
         void onAccepted(object sender, EventArgs e)
         {
-            Connection connection = sender as Connection;
-
-            // Output that a new connection with a client has been established.
-            Log.WriteConnection(sender as Connection, true);
-
             // Fire accepted event.
             Accepted.SafeInvoke(sender);
 
