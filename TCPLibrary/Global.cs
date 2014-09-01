@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace TCPLibrary
 {
@@ -34,18 +33,6 @@ namespace TCPLibrary
         public static string BytesToString(byte[] data)
         {
             return Encoding.ASCII.GetString(data);
-        }
-
-        public static void SafeInvoke(this EventHandler handler, object sender)
-        {
-            if (handler != null) handler(sender, EventArgs.Empty);
-        }
-
-        public static void SafeInvoke<T>(
-            this EventHandler<T> handler,
-            object sender, T args) where T : EventArgs
-        {
-            if (handler != null) handler(sender, args);
         }
     }
 }

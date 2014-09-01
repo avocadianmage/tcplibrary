@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Client\AsyncClient.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="Server\AsyncServer.cs" />
     <Compile Include="Connection.cs" />
