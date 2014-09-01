@@ -81,7 +81,7 @@ namespace TCPLibrary.Server
         /// <param name="connection"></param>
         /// <param name="recipients"></param>
         public void Send(
-            string message, 
+            byte[] message, 
             Connection connection, 
             Recipients recipients)
         {
@@ -104,10 +104,9 @@ namespace TCPLibrary.Server
             }
 
             // Send a message to all designated recipients.
-            byte[] data = Global.StringToBytes(message);
             foreach (Connection recipient in recipientList)
             {
-                recipient.Send(data);
+                recipient.Send(message);
             }
         }
 

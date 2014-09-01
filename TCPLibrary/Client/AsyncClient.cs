@@ -56,9 +56,9 @@ namespace TCPLibrary.Client
         /// Send the specified message to the server.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        public void Send(string message)
+        public void Send(byte[] message)
         {
-            connection.Send(Global.StringToBytes(message));
+            connection.Send(message);
         }
 
         /// <summary>

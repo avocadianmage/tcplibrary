@@ -14,25 +14,5 @@ namespace TCPLibrary
         /// connection to the server.
         /// </summary>
         public static int ConnectionBacklog { get { return 100; } }
-
-        /// <summary>
-        /// Convert the specified string into a byte array.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] StringToBytes(string data)
-        {
-            return Encoding.ASCII.GetBytes(data);
-        }
-
-        /// <summary>
-        /// Convert the specified byte array into a string.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static string BytesToString(byte[] data)
-        {
-            return Encoding.ASCII.GetString(data);
-        }
     }
 }

@@ -4,13 +4,13 @@ namespace TCPLibrary
 {
     public sealed class MessageEventArgs : EventArgs
     {
-        public string Message { get { return message; } }
+        public byte[] Message { get { return message; } }
 
-        readonly string message;
+        readonly byte[] message;
 
-        public MessageEventArgs(byte[] data)
+        public MessageEventArgs(byte[] message)
         {
-            this.message = Global.BytesToString(data);
+            this.message = message;
         }
     }
 }
