@@ -98,6 +98,7 @@ namespace TCPLibrary
         public void Connect(Socket clientSocket, EndPoint remoteEndPoint)
         {
             RemoteEndPoint = remoteEndPoint;
+            Socket = clientSocket;
             if (!clientSocket.ConnectAsync(this)) processConnect();
         }
 
@@ -106,6 +107,13 @@ namespace TCPLibrary
         /// </summary>
         void processConnect()
         {
+            // If the connection request times out, try again.
+            if (SocketError != SocketError.Success)
+            {
+                Connect(Socket, RemoteEndPoint);
+                return;
+            }
+
             // Prepare for communication.
             prepareForCommunication(ConnectSocket);
 
