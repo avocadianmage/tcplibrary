@@ -23,7 +23,8 @@ namespace TCPLibrary
         /// <param name="args"></param>
         public static void SafeInvoke<T>(
             this EventHandler<T> handler,
-            object sender, T args) where T : EventArgs
+            object sender, 
+            T args) where T : EventArgs
         {
             if (handler != null) handler(sender, args);
         }

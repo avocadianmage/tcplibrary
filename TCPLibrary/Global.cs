@@ -14,5 +14,10 @@ namespace TCPLibrary
         /// connection to the server.
         /// </summary>
         public static int ConnectionBacklog { get { return 100; } }
+
+        /// <summary>
+        /// The length in bytes of the prefix of a message.
+        /// </summary>
+        public static int MessagePrefixLength { get { return sizeof(int); } }
     }
 }

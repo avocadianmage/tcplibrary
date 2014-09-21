@@ -11,16 +11,16 @@ namespace TCPLibrary.Modules
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// The message being received. If null, then no message is currently in
-        /// the process of being received.
+        /// Buffer storing the byte data that will be converted to a 32-bit
+        /// integer denoting the length of the message.
         /// </summary>
-        byte[] receivedMessage;
+        //###
 
         /// <summary>
-        /// The number of bytes of the message being received that have been read so
-        /// far.
+        /// The message being received. If null, then no message is currently 
+        /// in the process of being received.
         /// </summary>
-        int receivedMessageBytesRead;
+        BufferObject messageBuffer;
 
         /// <summary>
         /// The connection used to perform socket receive operations.
@@ -37,7 +37,8 @@ namespace TCPLibrary.Modules
         }
 
         /// <summary>
-        /// Perform the socket operation to begin receiving data from the socket.
+        /// Perform the socket operation to begin receiving data from the 
+        /// socket.
         /// </summary>
         public void Start()
         {
@@ -75,42 +76,33 @@ namespace TCPLibrary.Modules
             while (bytesProcessed < connection.BytesTransferred)
             {
                 // Check if a new message has started.
-                if (receivedMessage == null)
+                if (messageBuffer == null)
                 {
                     // Read the prefix of the new message.
                     int length = connection.Buffer[bytesProcessed++];
 
-                    // Prepare to read the message.
-                    receivedMessage = new byte[length];
-                    receivedMessageBytesRead = 0;
+                    // Initialize the message buffer.
+                    messageBuffer = new BufferObject(length);
                 }
 
-                // Read bytes in the message.
-                int bytesToRead = Math.Min(
-                    receivedMessage.Length - receivedMessageBytesRead,
-                    connection.BytesTransferred - bytesProcessed);
-                Array.Copy(
+                // Read bytes in the message and update the amount of bytes
+                // that have been processed.
+                bytesProcessed += messageBuffer.ReadBufferData(
                     connection.Buffer,
                     bytesProcessed,
-                    receivedMessage,
-                    receivedMessageBytesRead,
-                    bytesToRead);
-
-                // Update the amount of bytes that have been read for the current
-                // message.
-                receivedMessageBytesRead += bytesToRead;
-
-                // Update the amount of bytes in the buffer that have been read.
-                bytesProcessed += bytesToRead;
+                    connection.BytesTransferred);
 
                 // Check if the message has been fully received.
-                if (receivedMessageBytesRead == receivedMessage.Length)
+                if (messageBuffer.IsFull)
                 {
-                    // Fire event indicating we have finished reading the message.
-                    MessageReceived(this, new MessageEventArgs(receivedMessage));
+                    // Fire event indicating we have finished reading the 
+                    // message.
+                    MessageReceived(
+                        this, 
+                        new MessageEventArgs(messageBuffer.Data));
 
                     // Reset for next read.
-                    receivedMessage = null;
+                    messageBuffer = null;
                 }
             }
         }

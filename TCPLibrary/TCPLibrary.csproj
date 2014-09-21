@@ -33,6 +33,7 @@
     <Compile Include="Client\AsyncClient.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MessageEventArgs.cs" />
+    <Compile Include="Modules\BufferObject.cs" />
     <Compile Include="Server\AsyncServer.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Global.cs" />
