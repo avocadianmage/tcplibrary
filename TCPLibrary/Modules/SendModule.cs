@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 
 namespace TCPLibrary.Modules
@@ -22,7 +23,7 @@ namespace TCPLibrary.Modules
             args.Completed += onCompleted;
 
             // Build byte message with prefixed length.
-            byte[] prefix = { (byte)message.Length };
+            byte[] prefix = BitConverter.GetBytes(message.Length);
             byte[] data = prefix.Concat(message).ToArray();
 
             // Populate buffer with data.

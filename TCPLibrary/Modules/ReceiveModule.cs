@@ -14,7 +14,7 @@ namespace TCPLibrary.Modules
         /// Buffer storing the byte data that will be converted to a 32-bit
         /// integer denoting the length of the message.
         /// </summary>
-        //###
+        BufferObject messagePrefixBuffer;
 
         /// <summary>
         /// The message being received. If null, then no message is currently 
@@ -78,10 +78,28 @@ namespace TCPLibrary.Modules
                 // Check if a new message has started.
                 if (messageBuffer == null)
                 {
-                    // Read the prefix of the new message.
-                    int length = connection.Buffer[bytesProcessed++];
+                    // Initialize the message prefix buffer.
+                    if (messagePrefixBuffer == null)
+                    {
+                        messagePrefixBuffer 
+                            = new BufferObject(Global.MessagePrefixLength);
+                    }
+
+                    // Read bytes in the message prefix and update the amount
+                    // of bytes that have been processed.
+                    bytesProcessed += messagePrefixBuffer.ReadBufferData(
+                        connection.Buffer,
+                        bytesProcessed,
+                        connection.BytesTransferred);
+
+                    // Do not start reading the message until the prefix has
+                    // been fully read.
+                    if (!messagePrefixBuffer.IsFull) continue;
 
                     // Initialize the message buffer.
+                    int length = BitConverter.ToInt32(
+                        messagePrefixBuffer.Data, 
+                        0);
                     messageBuffer = new BufferObject(length);
                 }
 
@@ -102,9 +120,16 @@ namespace TCPLibrary.Modules
                         new MessageEventArgs(messageBuffer.Data));
 
                     // Reset for next read.
-                    messageBuffer = null;
+                    reset();
                 }
             }
+        }
+
+        // Reset the module for the next message.
+        void reset()
+        {
+            messagePrefixBuffer = null;
+            messageBuffer = null;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TCPLibrary.Modules
 {
-    class BufferObject
+    sealed class BufferObject
     {
         /// <summary>
         /// Return true if the buffer data is fully populated and there is no
